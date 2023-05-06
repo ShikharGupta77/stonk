@@ -12,6 +12,7 @@ function App() {
     const [netGain, setNetGain] = useState(null);
 
     useEffect(() => {
+        console.log(isSignedIn, email);
         if (isSignedIn) {
             async function getUpdates() {
                 const userSnapshot = await db
@@ -43,7 +44,7 @@ function App() {
                 unsubscribe2();
             };
         }
-    }, [email]);
+    }, [email, isSignedIn]);
 
     function signUp(event) {
         event.preventDefault();
