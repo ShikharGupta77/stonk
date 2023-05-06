@@ -1,16 +1,9 @@
 import { useEffect, useState } from "react";
 import { db, auth } from "./firebase";
-import {
-    collection,
-    addDoc,
-    updateDoc,
-    increment,
-    onSnapshot,
-    doc,
-} from "firebase/firestore";
+import { updateDoc, increment, onSnapshot } from "firebase/firestore";
 
 function App() {
-    const [signedIn, setSignedIn] = useState(false);
+    const [isSignedIn, setIsSignedIn] = useState(false);
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
     const [addNumStocks, setAddNumStocks] = useState(0);
@@ -19,7 +12,7 @@ function App() {
     const [netGain, setNetGain] = useState(null);
 
     useEffect(() => {
-        if (email) {
+        if (isSignedIn) {
             async function getUpdates() {
                 const userSnapshot = await db
                     .collection("room1")
@@ -65,7 +58,7 @@ function App() {
                     .add({ email: email, netGain: 0, numStock: 0 });
 
                 setEmail(email);
-                setSignedIn(true);
+                setIsSignedIn(true);
             })
             .catch((err) => {
                 console.log(err);
@@ -78,7 +71,7 @@ function App() {
             .then((res) => {
                 const user = res.user;
                 setEmail(user.email);
-                setSignedIn(true);
+                setIsSignedIn(true);
             })
             .catch((err) => {
                 console.log(err);
@@ -107,7 +100,7 @@ function App() {
 
     return (
         <div className="App">
-            {signedIn ? (
+            {isSignedIn ? (
                 <div>
                     <h1>Stonk</h1>
                     <form onClick={(event) => buyStock(event)}>
