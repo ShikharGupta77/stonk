@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { db, auth } from "./firebase";
 import { updateDoc, increment, onSnapshot } from "firebase/firestore";
 
+// its buying by just clicking on input field for stocks
+
 function App() {
     const [isSignedIn, setIsSignedIn] = useState(false);
     const [email, setEmail] = useState(null);
@@ -89,13 +91,18 @@ function App() {
             .where("email", "==", email)
             .get();
         const userDocRef = userSnapshot.docs[0].ref;
+
+        var change = addNumStocks;
+        if (event.target.name === "sell") {
+            change = -addNumStocks;
+        }
         await updateDoc(userDocRef, {
-            numStock: increment(addNumStocks),
+            numStock: increment(change),
         });
 
         const gameDocRef = await db.collection("room1").doc("roomInfo");
         await updateDoc(gameDocRef, {
-            stockPrice: increment(addNumStocks),
+            stockPrice: increment(change),
         });
     }
 
@@ -112,8 +119,12 @@ function App() {
                                 setAddNumStocks(event.target.value)
                             }
                         ></input>
-                        <button type="submit">Buy</button>
-                        <button type="submit">Sell</button>
+                        <button type="submit" name="buy">
+                            Buy
+                        </button>
+                        <button type="submit" name="sell">
+                            Sell
+                        </button>
                     </form>
                     <p>Stock Price: ${stockPrice}</p>
                     <p>You have {numStock} stocks</p>
